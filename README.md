@@ -1,4 +1,4 @@
-# proof-of-reserves-tools
+# Merkle Proof Validation Tool
 
 ##  How to Proceed
 ###  1.Build the executable file
