@@ -1,3 +1,4 @@
 target
 *.class
 dependency-reduced-pom.xml
+.idea/
