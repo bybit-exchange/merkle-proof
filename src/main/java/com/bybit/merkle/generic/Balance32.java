@@ -23,7 +23,7 @@ public class Balance32 extends Balance<Asset32> {
             for (Asset32 asset : Asset32.getBalances()) {
                 new BigDecimal(balances.get(asset));
             }
-        } catch (Exception e) {
+        } catch (NullPointerException | NumberFormatException e) {
             return false;
         }
         return true;

@@ -5,36 +5,54 @@ import com.bybit.merkle.generic.Balance20;
 import com.bybit.merkle.generic.Balance32;
 import com.bybit.merkle.generic.Balance40;
 import com.bybit.merkle.generic.BalanceMnt20;
-import com.bybit.util.JsonUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
 public class MerkleProofValidator {
     public static void main(String[] args) {
         if (args.length < 1) {
-            throw new RuntimeException("param error");
+            throw new RuntimeException("Param error");
         }
         String jsonfile = args[0];
         byte[] bytes;
         try {
-            bytes = Files.readAllBytes(Paths.get(jsonfile));
-        } catch (IOException e) {
-            throw new RuntimeException("can not found json file: " + jsonfile);
+            Path filePath = validatePath(jsonfile);
+            bytes = Files.readAllBytes(filePath);
+        } catch (IOException | IllegalArgumentException e) {
+            throw new RuntimeException("Cannot found or access json file: " + jsonfile);
         }
 
-        String pathJson = new String(bytes);
+        String pathJson;
+        try {
+            pathJson = new String(bytes, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            throw new RuntimeException("Unsupported encoding for file: " + jsonfile);
+        }
+
         boolean validate = validateAsset40(pathJson)
                 || validateAsset32(pathJson)
                 || validateMnt20(pathJson)
                 || validate20(pathJson)
                 || validate(pathJson);
-        System.out.println("validate result is : " + validate);
+        System.out.println("Validate result is : " + validate);
+    }
+
+    private static Path validatePath(String path) {
+        Path filePath = Paths.get(path).normalize();
+        Path validPath = Paths.get(".").toAbsolutePath().normalize();
+        System.out.println("Currently execute path is: " + validPath);
+        if (!filePath.startsWith(validPath)) {
+            throw new InvalidPathException(path, "Invalid file path");
+        }
+        return filePath;
     }
 
     static ObjectMapper objectMapper = new ObjectMapper();
@@ -45,8 +63,8 @@ public class MerkleProofValidator {
             GenericMerkleTree<Balance40> merkleTree = objectMapper.readValue(json, new TypeReference<GenericMerkleTree<Balance40>>() {
             });
             success = Optional.ofNullable(merkleTree).map(GenericMerkleTree::validate).orElse(false);
-        } catch (JsonProcessingException e) {
-            System.out.println("fallback to version Asset32");
+        } catch (IOException e) {
+            System.out.println("Fallback to version Asset32");
         }
         return success;
     }
@@ -57,8 +75,8 @@ public class MerkleProofValidator {
             GenericMerkleTree<Balance32> merkleTree = objectMapper.readValue(json, new TypeReference<GenericMerkleTree<Balance32>>() {
             });
             success = Optional.ofNullable(merkleTree).map(GenericMerkleTree::validate).orElse(false);
-        } catch (JsonProcessingException e) {
-            System.out.println("fallback to version AssetMnt20");
+        } catch (IOException e) {
+            System.out.println("Fallback to version AssetMnt20");
         }
         return success;
     }
@@ -70,7 +88,7 @@ public class MerkleProofValidator {
             });
             success = Optional.ofNullable(merkleTree).map(GenericMerkleTree::validate).orElse(false);
         } catch (IOException e) {
-            System.out.println("fallback to version Asset20");
+            System.out.println("Fallback to version Asset20");
         }
         return success;
     }
@@ -82,17 +100,17 @@ public class MerkleProofValidator {
             });
             success = Optional.ofNullable(merkleTree).map(GenericMerkleTree::validate).orElse(false);
         } catch (IOException e) {
-            System.out.println("fallback to origin version");
+            System.out.println("Fallback to origin version");
         }
         return success;
     }
 
     public static boolean validate(String json) {
         try {
-            MerkleTree merkleTree = JsonUtil.parseObject(json, MerkleTree.class);
+            MerkleTree merkleTree = objectMapper.readValue(json, MerkleTree.class);
             return merkleTree.validate();
-        } catch (Exception e) {
-            throw new RuntimeException("json content is error");
+        } catch (IOException e) {
+            throw new RuntimeException("Json content is error", e);
         }
     }
 }
