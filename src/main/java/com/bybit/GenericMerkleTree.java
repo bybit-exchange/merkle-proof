@@ -5,7 +5,6 @@ import com.bybit.merkle.generic.Path;
 import com.bybit.merkle.generic.Self;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
-import org.apache.commons.collections.CollectionUtils;
 
 import java.io.Serializable;
 import java.util.List;
@@ -18,7 +17,7 @@ public class GenericMerkleTree<T extends Balance> implements Serializable {
     private List<Path<T>> path;
 
     public boolean validate() {
-        if (this.self == null || CollectionUtils.isEmpty(this.path)) {
+        if (this.self == null || this.path == null || this.path.isEmpty()) {
             return false;
         }
         if (!this.self.validate()) {

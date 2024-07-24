@@ -23,7 +23,7 @@ public class Balance20 extends Balance<Asset20> {
             for (Asset20 asset : Asset20.getBalances()) {
                 new BigDecimal(balances.get(asset));
             }
-        } catch (Exception e) {
+        } catch (NullPointerException | NumberFormatException e) {
             return false;
         }
         return true;

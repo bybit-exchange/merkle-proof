@@ -1,31 +1,19 @@
 package com.bybit.merkle;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
+
 import java.util.List;
 import java.util.Objects;
 
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MerkleTree {
-
     private Self self;
     private List<Path> path;
 
-    public Self getSelf() {
-        return self;
-    }
-
-    public void setSelf(Self self) {
-        this.self = self;
-    }
-
-    public List<Path> getPath() {
-        return path;
-    }
-
-    public void setPath(List<Path> path) {
-        this.path = path;
-    }
-
     public boolean validate(){
-        if(this.self == null || this.path == null || this.path.size() == 0) {
+        if(this.self == null || this.path == null || this.path.isEmpty()) {
             return false;
         }
         if(!this.self.validate()) {
