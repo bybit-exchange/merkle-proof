@@ -8,14 +8,20 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Objects;
 
-
 public class MerkleProofValidatorTest {
 
     @Test
     public void testMerkleProofForToken40() {
-        String fileName = "user_merkle_tree_path_40_mock.json";
+        String fileName = "mock_user_merkle_tree_path_40.json";
         String json = read(fileName);
         Assertions.assertTrue(MerkleProofValidator.validateAsset40(json));
+    }
+
+    @Test
+    public void testMerkleProofForToken40V2() {
+        String fileName = "mock_user_merkle_tree_path_40_v2.json";
+        String json = read(fileName);
+        Assertions.assertTrue(MerkleProofValidator.validateAsset40V2(json));
     }
 
     private String read(String fileName) {

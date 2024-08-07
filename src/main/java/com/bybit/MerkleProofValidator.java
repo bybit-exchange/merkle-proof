@@ -4,6 +4,7 @@ import com.bybit.merkle.MerkleTree;
 import com.bybit.merkle.generic.Balance20;
 import com.bybit.merkle.generic.Balance32;
 import com.bybit.merkle.generic.Balance40;
+import com.bybit.merkle.generic.Balance40V2;
 import com.bybit.merkle.generic.BalanceMnt20;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +18,8 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 public class MerkleProofValidator {
+    private final static ObjectMapper objectMapper = new ObjectMapper();
+
     public static void main(String[] args) {
         if (args.length < 1) {
             throw new RuntimeException("Param error");
@@ -37,12 +40,7 @@ public class MerkleProofValidator {
             throw new RuntimeException("Unsupported encoding for file: " + jsonfile);
         }
 
-        boolean validate = validateAsset40(pathJson)
-                || validateAsset32(pathJson)
-                || validateMnt20(pathJson)
-                || validate20(pathJson)
-                || validate(pathJson);
-        System.out.println("Validate result is : " + validate);
+        System.out.println("Validate result is : " + validation(pathJson));
     }
 
     private static Path validatePath(String path) {
@@ -55,7 +53,26 @@ public class MerkleProofValidator {
         return filePath;
     }
 
-    static ObjectMapper objectMapper = new ObjectMapper();
+    public static boolean validation(String json) {
+        return validateAsset40V2(json)
+                || validateAsset40(json)
+                || validateAsset32(json)
+                || validateMnt20(json)
+                || validate20(json)
+                || validate(json);
+    }
+
+    public static boolean validateAsset40V2(String json) {
+        boolean success = false;
+        try {
+            GenericMerkleTree<Balance40V2> merkleTree = objectMapper.readValue(json, new TypeReference<GenericMerkleTree<Balance40V2>>() {
+            });
+            success = Optional.ofNullable(merkleTree).map(GenericMerkleTree::validate).orElse(false);
+        } catch (IOException e) {
+            System.out.println("Fallback to version Asset40");
+        }
+        return success;
+    }
 
     public static boolean validateAsset40(String json) {
         boolean success = false;
