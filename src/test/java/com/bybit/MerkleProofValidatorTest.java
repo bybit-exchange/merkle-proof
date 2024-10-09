@@ -24,6 +24,13 @@ public class MerkleProofValidatorTest {
         Assertions.assertTrue(MerkleProofValidator.validateAsset40V2(json));
     }
 
+    @Test
+    public void testMerkleProofForToken40V3() {
+        String fileName = "mock_user_merkle_tree_path_40_v3.json";
+        String json = read(fileName);
+        Assertions.assertTrue(MerkleProofValidator.validateAsset40V3(json));
+    }
+
     private String read(String fileName) {
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
              BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
