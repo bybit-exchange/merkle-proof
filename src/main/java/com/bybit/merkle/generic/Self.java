@@ -9,7 +9,10 @@ import lombok.EqualsAndHashCode;
 public class Self<T extends Balance> extends Path<T> {
     private String userHash;
 
-    public boolean validate(){
+    public boolean validate() {
+        if (this.userHash == null) {
+            throw new RuntimeException("User hash should be not null");
+        }
         String data = userHash + balance.concatBalances();
         String calculatedHash = CryptoUtil.sha256Str(data);
         return calculatedHash.equals(hash);

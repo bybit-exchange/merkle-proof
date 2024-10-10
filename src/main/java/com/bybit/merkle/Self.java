@@ -16,6 +16,9 @@ public final class Self {
     private Integer height;
 
     public boolean validate() {
+        if (this.userHash == null) {
+            throw new RuntimeException("User hash should be not null");
+        }
         String data = userHash + balance.getBtc() + balance.getEth() + balance.getUsdt() + balance.getUsdc();
         String s = CryptoUtil.sha256Str(data);
         return s.equals(hash);
