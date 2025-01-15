@@ -6,6 +6,7 @@ import com.bybit.merkle.generic.Balance32;
 import com.bybit.merkle.generic.Balance40;
 import com.bybit.merkle.generic.Balance40V2;
 import com.bybit.merkle.generic.Balance40V3;
+import com.bybit.merkle.generic.Balance40V4;
 import com.bybit.merkle.generic.BalanceMnt20;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,13 +56,26 @@ public class MerkleProofValidator {
     }
 
     public static boolean validation(String json) {
-        return validateAsset40V3(json)
+        return validateAsset40V4(json)
+                || validateAsset40V3(json)
                 || validateAsset40V2(json)
                 || validateAsset40(json)
                 || validateAsset32(json)
                 || validateMnt20(json)
                 || validate20(json)
                 || validate(json);
+    }
+
+    public static boolean validateAsset40V4(String json) {
+        boolean success = false;
+        try {
+            GenericMerkleTree<Balance40V4> merkleTree = objectMapper.readValue(json, new TypeReference<GenericMerkleTree<Balance40V4>>() {
+            });
+            success = Optional.ofNullable(merkleTree).map(GenericMerkleTree::validate).orElse(false);
+        } catch (IOException e) {
+            System.out.println("Fallback to version Asset40V3");
+        }
+        return success;
     }
 
     public static boolean validateAsset40V3(String json) {
