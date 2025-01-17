@@ -6,29 +6,24 @@ import org.junit.jupiter.api.Test;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class MerkleProofValidatorTest {
 
     @Test
-    public void testMerkleProofForToken40() {
-        String fileName = "mock_user_merkle_tree_path_40.json";
-        String json = read(fileName);
-        Assertions.assertTrue(MerkleProofValidator.validateAsset40(json));
-    }
-
-    @Test
-    public void testMerkleProofForToken40V2() {
-        String fileName = "mock_user_merkle_tree_path_40_v2.json";
-        String json = read(fileName);
-        Assertions.assertTrue(MerkleProofValidator.validateAsset40V2(json));
-    }
-
-    @Test
-    public void testMerkleProofForToken40V3() {
-        String fileName = "mock_user_merkle_tree_path_40_v3.json";
-        String json = read(fileName);
-        Assertions.assertTrue(MerkleProofValidator.validateAsset40V3(json));
+    public void testMerkleProofValidation() {
+        List<String> files = new ArrayList<>();
+        files.add("mock_user_merkle_tree_path_40.json");
+        files.add("mock_user_merkle_tree_path_40_v2.json");
+        files.add("mock_user_merkle_tree_path_40_v3.json");
+        files.add("mock_user_merkle_tree_path_40_v4.json");
+        files.forEach(file -> {
+            System.out.println("Validate file: " + file);
+            String json = read(file);
+            Assertions.assertTrue(MerkleProofValidator.validation(json));
+        });
     }
 
     private String read(String fileName) {
