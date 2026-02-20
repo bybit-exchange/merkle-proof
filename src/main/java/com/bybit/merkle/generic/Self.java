@@ -1,6 +1,7 @@
 package com.bybit.merkle.generic;
 
 import com.bybit.util.CryptoUtil;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

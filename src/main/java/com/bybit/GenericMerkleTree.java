@@ -3,6 +3,7 @@ package com.bybit;
 import com.bybit.merkle.generic.Balance;
 import com.bybit.merkle.generic.Path;
 import com.bybit.merkle.generic.Self;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
@@ -26,19 +27,27 @@ public class GenericMerkleTree<T extends Balance> implements Serializable {
         if (!path.get(0).validate()) {
             return false;
         }
-        if (path.get(0).getType() == null || Objects.equals(path.get(0).getType(), self.getType())) {
+        if (path.get(0).getType() == null
+                || Objects.equals(path.get(0).getType(), self.getType())) {
             return false;
         }
         String left, right;
-        if (self.getType() == 1) {//左
+        if (self.getType() == 1) { // 左
             left = self.getHash();
             right = path.get(0).getHash();
-        } else { //右
+        } else { // 右
             left = path.get(0).getHash();
             right = self.getHash();
         }
         int height = 1;
-        Path<T> node = new Path<>(left, right, self.getBalance(), path.get(0).getBalance(), height + 1, getTypeBySibling(path.get(1)));
+        Path<T> node =
+                new Path<>(
+                        left,
+                        right,
+                        self.getBalance(),
+                        path.get(0).getBalance(),
+                        height + 1,
+                        getTypeBySibling(path.get(1)));
         for (int i = 1; i < path.size() - 1; i++) {
             height++;
             if (!path.get(i).validate()) {
@@ -56,7 +65,14 @@ public class GenericMerkleTree<T extends Balance> implements Serializable {
                 right = currentSibling.getHash();
             }
             Integer type = getTypeBySibling(path.get(i + 1));
-            node = new Path<>(left, right, node.getBalance(), path.get(i).getBalance(), height + 1, type);
+            node =
+                    new Path<>(
+                            left,
+                            right,
+                            node.getBalance(),
+                            path.get(i).getBalance(),
+                            height + 1,
+                            type);
         }
         Path<T> root = path.get(path.size() - 1);
 
