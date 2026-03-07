@@ -19,16 +19,20 @@ public class MerkleProofValidatorTest {
         files.add("mock_user_merkle_tree_path_40_v2.json");
         files.add("mock_user_merkle_tree_path_40_v3.json");
         files.add("mock_user_merkle_tree_path_40_v4.json");
-        files.forEach(file -> {
-            System.out.println("Validate file: " + file);
-            String json = read(file);
-            Assertions.assertTrue(MerkleProofValidator.validation(json));
-        });
+        files.add("mock_user_merkle_tree_path_40_v5.json");
+        files.forEach(
+                file -> {
+                    System.out.println("Validate file: " + file);
+                    String json = read(file);
+                    Assertions.assertTrue(MerkleProofValidator.validation(json));
+                });
     }
 
     private String read(String fileName) {
         try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
-             BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(inputStream)))) {
+                BufferedReader reader =
+                        new BufferedReader(
+                                new InputStreamReader(Objects.requireNonNull(inputStream)))) {
             StringBuilder sb = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {

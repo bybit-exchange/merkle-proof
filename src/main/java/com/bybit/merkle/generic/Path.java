@@ -1,6 +1,7 @@
 package com.bybit.merkle.generic;
 
 import com.bybit.util.CryptoUtil;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,7 +19,8 @@ public class Path<T extends Balance> {
     protected String hash;
     protected T balance;
 
-    public Path(String leftHash, String rightHash, T balance1, T balance2, int height, Integer type) {
+    public Path(
+            String leftHash, String rightHash, T balance1, T balance2, int height, Integer type) {
         if (balance1.validate() && balance2.validate()) {
             T balance = (T) balance1.add(balance2);
             String balanceConcatenation = balance.concatBalances();

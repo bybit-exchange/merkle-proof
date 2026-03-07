@@ -1,6 +1,7 @@
 package com.bybit.merkle;
 
 import com.bybit.util.CryptoUtil;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,18 +25,37 @@ public final class Path {
     }
 
     public boolean validate() {
-        if (this.balance == null || !this.balance.validate() || hash == null || hash.isEmpty() || this.type < 1 || this.type > 4) {
+        if (this.balance == null
+                || !this.balance.validate()
+                || hash == null
+                || hash.isEmpty()
+                || this.type < 1
+                || this.type > 4) {
             return false;
         }
         return this.height >= 1;
     }
 
-    public static Path instance(String leftHash, String rightHash, Balance balance1, Balance balance2, int height, Integer type) {
+    public static Path instance(
+            String leftHash,
+            String rightHash,
+            Balance balance1,
+            Balance balance2,
+            int height,
+            Integer type) {
         if (!balance1.validate() || !balance2.validate()) {
             return new Path();
         }
         Balance balance = balance1.add(balance2);
-        String data = "" + leftHash + rightHash + balance.getBtc() + balance.getEth() + balance.getUsdt() + balance.getUsdc() + height;
+        String data =
+                ""
+                        + leftHash
+                        + rightHash
+                        + balance.getBtc()
+                        + balance.getEth()
+                        + balance.getUsdt()
+                        + balance.getUsdc()
+                        + height;
         String s = CryptoUtil.sha256Str(data);
         return new Path(height, type, s, balance);
     }

@@ -44,7 +44,9 @@ public class Balance40 extends Balance<Asset40> {
     public static class BalanceDeserializer extends JsonDeserializer<Balance40> {
 
         @Override
-        public Balance40 deserialize(JsonParser parser, DeserializationContext deserializationContext) throws IOException {
+        public Balance40 deserialize(
+                JsonParser parser, DeserializationContext deserializationContext)
+                throws IOException {
             Balance40 balance = new Balance40();
             EnumMap<Asset40, String> balanceMap = balance.getBalances();
 

@@ -1,6 +1,7 @@
 package com.bybit.merkle;
 
 import com.bybit.util.CryptoUtil;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
@@ -19,7 +20,12 @@ public final class Self {
         if (this.userHash == null) {
             throw new RuntimeException("User hash should be not null");
         }
-        String data = userHash + balance.getBtc() + balance.getEth() + balance.getUsdt() + balance.getUsdc();
+        String data =
+                userHash
+                        + balance.getBtc()
+                        + balance.getEth()
+                        + balance.getUsdt()
+                        + balance.getUsdc();
         String s = CryptoUtil.sha256Str(data);
         return s.equals(hash);
     }

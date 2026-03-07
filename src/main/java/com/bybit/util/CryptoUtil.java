@@ -16,7 +16,7 @@ public class CryptoUtil {
         }
     }
 
-    public static String sha256Str(String origin){
+    public static String sha256Str(String origin) {
         byte[] bytes = sha256(origin);
         // Convert byte array into signum representation
         BigInteger no = new BigInteger(1, bytes);
