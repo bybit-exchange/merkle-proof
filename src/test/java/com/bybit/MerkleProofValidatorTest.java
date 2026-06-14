@@ -6,11 +6,26 @@ import org.junit.jupiter.api.Test;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class MerkleProofValidatorTest {
+
+    @Test
+    public void testValidatePathAcceptsRelativePaths() throws Exception {
+        Method method = MerkleProofValidator.class.getDeclaredMethod("validatePath", String.class);
+        method.setAccessible(true);
+
+        Path path =
+                (Path) method.invoke(null, "src/test/resources/mock_user_merkle_tree_path_40.json");
+
+        Assertions.assertTrue(Files.exists(path));
+        Assertions.assertTrue(path.isAbsolute());
+    }
 
     @Test
     public void testMerkleProofValidation() {
