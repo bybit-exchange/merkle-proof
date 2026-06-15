@@ -49,6 +49,10 @@ public class MerkleProofValidator {
 
     private static Path validatePath(String path) {
         Path filePath = Paths.get(path).normalize();
+        if (!filePath.isAbsolute()) {
+            filePath = Paths.get(".").toAbsolutePath().normalize().resolve(filePath).normalize();
+        }
+
         Path validPath = Paths.get(".").toAbsolutePath().normalize();
         System.out.println("Currently execute path is: " + validPath);
         if (!filePath.startsWith(validPath)) {
