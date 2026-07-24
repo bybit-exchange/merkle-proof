@@ -2,7 +2,7 @@
 
 ##  How to Proceed
 ###  1.Build the executable file
-Download the latest source code files, and ensure that  [JDK](https://openjdk.org/) (version 1.8 and above) and [Maven](https://maven.apache.org/) have been installed on your workstation or laptop.
+Download the latest source code files, and ensure that  [JDK](https://openjdk.org/) (version 1.8 and above) and [3697503](https://maven.apache.org/) have been installed on your workstation or laptop.
 + Resolve dependencies, compile and package
 ```java
     mvn clean package
