@@ -9,6 +9,7 @@ import com.bybit.merkle.generic.Balance40V3;
 import com.bybit.merkle.generic.Balance40V4;
 import com.bybit.merkle.generic.Balance40V5;
 import com.bybit.merkle.generic.Balance50;
+import com.bybit.merkle.generic.Balance50V2;
 import com.bybit.merkle.generic.BalanceMnt20;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -59,7 +60,8 @@ public class MerkleProofValidator {
     }
 
     public static boolean validation(String json) {
-        return validateAsset50(json)
+        return validateAsset50V2(json)
+                || validateAsset50(json)
                 || validateAsset40V5(json)
                 || validateAsset40V4(json)
                 || validateAsset40V3(json)
@@ -69,6 +71,20 @@ public class MerkleProofValidator {
                 || validateMnt20(json)
                 || validate20(json)
                 || validate(json);
+    }
+
+    public static boolean validateAsset50V2(String json) {
+        boolean success = false;
+        try {
+            GenericMerkleTree<Balance50V2> merkleTree =
+                    objectMapper.readValue(
+                            json, new TypeReference<GenericMerkleTree<Balance50V2>>() {});
+            success =
+                    Optional.ofNullable(merkleTree).map(GenericMerkleTree::validate).orElse(false);
+        } catch (IOException e) {
+            System.out.println("Fallback to version Asset50");
+        }
+        return success;
     }
 
     public static boolean validateAsset50(String json) {
